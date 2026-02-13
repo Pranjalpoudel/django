@@ -7,13 +7,15 @@
             <th>Description</th>
             <th>Actions</th>
         </tr>
-        <tr>
-            <td>Django Course</td>
-            <td>All Contents of Django</td>
-            <td>
-                <a href="#">Edit</a>
-                <a href="#">Delete</a>
-            </td>
-        </tr>
+        {% for n in notes %}
+            <tr>
+                <td>{{ n.title }}</td>
+                <td>{{ n.description }}</td>
+                <td>
+                    <a href="#">Edit</a>
+                    <a href="#">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
     </table>
 {% endblock content %}
