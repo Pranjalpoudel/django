@@ -6,5 +6,6 @@ app_name ="notes"
 urlpatterns = [
     path('', views.index,name="index"),
     path('add/',views.add_note,name="add"),
+    path('del/<int:note_id>/',views.delete_note,name="delete")
     
 ]

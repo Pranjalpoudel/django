@@ -13,3 +13,9 @@ th,td{
     list-style: auto;
     padding: 0;
 }
+.error{
+    color: red;
+}
+.success{
+    color: green;
+}

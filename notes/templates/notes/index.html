@@ -13,7 +13,8 @@
                 <td>{{ n.description }}</td>
                 <td>
                     <a href="#">Edit</a>
-                    <a href="#">Delete</a>
+                    <a href="{% url 'notes:delete' n.id %}"
+                       onclick="return confirm('are you sure?')">Delete</a>
                 </td>
             </tr>
         {% endfor %}

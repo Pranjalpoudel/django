@@ -9,6 +9,9 @@
     </head>
     <body>
         {% include "notes/partials/header.html" %}
+        {% if messages %}
+            {% for m in messages %}<p class= "{{ m.tags }}">{{ m }}</p>{% endfor %}
+        {% endif %}
         {% block content %}
         {% endblock content %}
     </body>
