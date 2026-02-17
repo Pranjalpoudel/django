@@ -8,3 +8,8 @@ th,td{
     padding: 10px;
 
 }
+.errorlist{
+    color: red;
+    list-style: auto;
+    padding: 0;
+}
