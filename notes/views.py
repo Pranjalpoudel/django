@@ -19,8 +19,7 @@ def add_note(request):
             return redirect("notes:index")
     else:
         form = NoteForm()
-        form = NoteForm
-        return render(request,"notes/add.html",{
+    return render(request,"notes/add.html",{
             'form':form
     })
 

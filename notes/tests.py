@@ -20,5 +20,5 @@ class NotesTestCase(TestCase):
         )
         self.assertEqual(res.status_code, 302)
 
-        reshome = self.client.get(reverse('notes:home'))
+        reshome = self.client.get(reverse('notes:index'))
         self.assertContains(reshome, "hello")
