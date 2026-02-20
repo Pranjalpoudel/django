@@ -7,5 +7,7 @@ urlpatterns = [
     path('', views.index,name="index"),
     path('add/',views.add_note_sql_injection,name="add"),
     path('del/<int:note_id>/',views.delete_note,name="delete")
+    path('set_cookie/', views.set_cookie, name='set_cookie'),
+    
     
 ]

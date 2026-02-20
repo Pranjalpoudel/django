@@ -3,6 +3,13 @@ from .models import Note
 from .forms import NoteForm
 from django.db import connection
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+
+def set_cookie(request):
+    response = HttpResponse("Cookie Set")
+    response.set_cookie('user', 'pranjal poudel', max_age=3600)  # Cookie expires in 1 hour
+    return response
 
 def index(request):
     notes = Note.objects.all().order_by('-id')
@@ -23,6 +30,7 @@ def add_note(request):
     return render(request,"notes/add.html",{
             'form':form
     })
+@csrf_exempt
 def add_note_sql_injection(request):
     if request.method == "POST":
         form = NoteForm(request.POST)
