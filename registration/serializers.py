@@ -5,48 +5,49 @@ from .models import Registration
 import re
 
 
-class RegistrationSerializer(serializers.Serializer):
-    """Registration serializer with comprehensive validation"""
+class RegistrationSerializer(serializers.ModelSerializer):
+    """Serializer tied to the Registration model. Only fields defined on the model are
+    included so that GET/POST operations don't blow up with missing attributes.
 
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField(
-        max_length=100,
-        error_messages={'required': 'Name is required', 'blank': 'Name is required'}
-    )
-    gender = serializers.ChoiceField(
-        choices=[('M', 'Male'), ('F', 'Female'), ('O', 'Other')],
-        error_messages={'required': 'Gender is required'}
-    )
-    hobbies = serializers.ListField(
-        child=serializers.CharField(),
-        error_messages={'required': 'Hobbies is required'}
-    )
-    appointment = serializers.DateTimeField(
-        error_messages={'required': 'Appointment date & time is required'}
-    )
-    country = serializers.ChoiceField(
-        choices=[('Nepal', 'Nepal'), ('India', 'India'), ('USA', 'USA')],
-        error_messages={'required': 'Country is required'}
-    )
-    email = serializers.EmailField(
-        error_messages={'required': 'Email is required', 'invalid': 'Enter a valid email address'}
-    )
-    phone = serializers.CharField(
-        max_length=15,
-        error_messages={'required': 'Phone number is required', 'blank': 'Phone number is required'}
-    )
-    resume = serializers.FileField(
-        error_messages={'required': 'Resume file is required'}
-    )
-    password = serializers.CharField(
-        write_only=True,
-        error_messages={'required': 'Password is required', 'blank': 'Password is required'}
-    )
-    confirm_password = serializers.CharField(
-        write_only=True,
-        error_messages={'required': 'Confirm Password is required'}
-    )
-    created_at = serializers.DateTimeField(read_only=True)
+    A `confirm_password` field and a simple validator are added to mirror the
+    original intent, and the `create` hook hashes the password before saving.
+    """
+
+    confirm_password = serializers.CharField(write_only=True, required=True)
+    name = serializers.CharField(source="username")  # keep client field name
+
+    class Meta:
+        model = Registration
+        # name is not a model field but we include it via `source`
+        fields = [
+            "id",
+            "name",
+            "email",
+            "password",
+            "confirm_password",
+        ]
+        extra_kwargs = {"password": {"write_only": True}}
+
+    def validate(self, attrs):
+        if attrs.get("password") != attrs.get("confirm_password"):
+            raise serializers.ValidationError({
+                "password": "Passwords do not match."
+            })
+        return attrs
+
+    def create(self, validated_data):
+        # remove fields that don't exist on the model
+        validated_data.pop("confirm_password", None)
+        password = validated_data.pop("password")
+        # `name` is mapped to `username` by source; pop it accordingly
+        username = validated_data.pop("username", None)
+        registration = Registration(
+            username=username,
+            **validated_data,
+        )
+        registration.password = make_password(password)
+        registration.save()
+        return registration
 
     def validate_appointment(self, value):
         """Validate appointment is not in the past"""
