@@ -22,4 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('notes/', include('notes.urls')),
     path('api/registration/', include('registration.urls')),
+    path('testjwt/', include('testjwt.urls')),
+
 ]
